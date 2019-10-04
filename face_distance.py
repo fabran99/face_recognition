@@ -2,22 +2,28 @@ from os import listdir
 from os.path import isfile, join, splitext
 import face_recognition
 from shutil import copyfile
+import re
+
+# known_img_path = "./img/known/"
+# unknown_img_path = "./img/unknown/"
+# matches_path="./img/matches/"
+print("Ruta a conocidos: ")
+known_img_path = input()
+
+print("Ruta a desconocidos: ")
+unknown_img_path = input()
+
+print("Ruta donde colocar los resultados: ")
+matches_path = input()
+
+#expresion regular para filtrar las imagenes
+reg_extension = "\.jpg|\.png|\.jpeg|\.gif$"
 
 # tomo los archivos de la carpeta de identificados
-known_img_path = "./img/known"
-known_files = [f for f in listdir(known_img_path) if isfile(join(known_img_path, f)) ]
+known_images = [f for f in listdir(known_img_path) if isfile(join(known_img_path, f)) or re.search(reg_extension, f)]
 
-#filtro las imagenes
-ext = [".jpg",".png",".jpeg",".gif"]
-known_images=[]
-
-for x in known_files:
-    for y in ext:
-        if y in x:
-            known_images.append(x)
-
-
-# creo un modelo por cada imagen y lo agrego al diccionario
+print(known_images)
+# creo un modelo por cada imagen y lo agrego a la lista
 known_models=[]
 
 for image_name in known_images:
@@ -31,17 +37,7 @@ for image_name in known_images:
 
 
 # tomo los archivos de la carpeta de no identificados
-unknown_img_path = "./img/unknown"
-unknown_files = [f for f in listdir(unknown_img_path) if isfile(join(unknown_img_path, f)) ]
-
-# filtro las imagenes
-unknown_images=[]
-
-for x in unknown_files:
-    for y in ext:
-        if y in x:
-            unknown_images.append(x)
-            break
+unknown_images = [f for f in listdir(unknown_img_path) if isfile(join(unknown_img_path, f)) or re.search(reg_extension, f)]
 
 # por cada imagen de la carpeta comparo todos los modelos
 # img_model es un array vacio en caso de que la imagen no tenga caras
@@ -62,6 +58,8 @@ for image_name in unknown_images:
             # cuanta menor sea la distancia mas parecido tienen
             for i, face_distance in enumerate(face_distances):
                 if face_distance < 0.5:
-                    dst_route="./img/matches/"+image_name
+                    dst_route=join(matches_path,image_name)
                     copyfile(route, dst_route)
                     break
+
+print("Terminado")
