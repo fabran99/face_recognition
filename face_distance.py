@@ -20,7 +20,7 @@ matches_path = input()
 reg_extension = "\.jpg|\.png|\.jpeg|\.gif$"
 
 # tomo los archivos de la carpeta de identificados
-known_images = [f for f in listdir(known_img_path) if isfile(join(known_img_path, f)) or re.search(reg_extension, f)]
+known_images = [f for f in listdir(known_img_path) if isfile(join(known_img_path, f)) and re.search(reg_extension, f)]
 
 print(known_images)
 # creo un modelo por cada imagen y lo agrego a la lista
@@ -37,7 +37,7 @@ for image_name in known_images:
 
 
 # tomo los archivos de la carpeta de no identificados
-unknown_images = [f for f in listdir(unknown_img_path) if isfile(join(unknown_img_path, f)) or re.search(reg_extension, f)]
+unknown_images = [f for f in listdir(unknown_img_path) if isfile(join(unknown_img_path, f)) and re.search(reg_extension, f)]
 
 # por cada imagen de la carpeta comparo todos los modelos
 # img_model es un array vacio en caso de que la imagen no tenga caras
